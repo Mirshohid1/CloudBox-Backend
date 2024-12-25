@@ -24,7 +24,6 @@ class User(AbstractUser):
     used_storage = models.PositiveIntegerField(
         _("used storage"),
         default=0,
-        validators=[MaxValueValidator(10241)],
     )
 
     def clean(self):
