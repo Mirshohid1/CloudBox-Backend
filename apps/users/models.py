@@ -48,3 +48,6 @@ class User(AbstractUser):
             raise ValidationError({'last_name': "Spaces are not allowed in the last name."})
 
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.username}: {self.email} ({self.used_storage}/{self.storage_limit})"
