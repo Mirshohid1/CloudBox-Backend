@@ -23,7 +23,7 @@ class Folder(models.Model):
     owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        verbose_name=("owner"),
+        verbose_name=_("owner"),
     )
 
     def delete(self, *args, **kwargs):
