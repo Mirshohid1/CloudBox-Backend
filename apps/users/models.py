@@ -49,4 +49,4 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.username}: {self.email} ({self.used_storage}/{self.storage_limit})"
+        return f"{self.username}: {self.email} ({self.used_storage}/{self.storage_limit}mb)"
