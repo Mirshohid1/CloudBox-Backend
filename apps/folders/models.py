@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from ..users.models import User, data_formating
+from ..users.models import User
+from services.formatting import data_formatting
 
 
 def get_default_parent_folder():
@@ -11,18 +12,18 @@ def get_default_parent_folder():
 class Folder(models.Model):
     name = models.CharField(max_length=100)
     parent = models.ForeignKey(
-        _("parent folder"),
         'self',
+        verbose_name=_("parent folder"),
+        on_delete=models.CASCADE,
         null=True, blank=True,
         default=get_default_parent_folder,
-        on_delete=models.CASCADE,
         related_name='subfolders',
     )
     created_at = models.DateTimeField(_("created datetime"), auto_now_add=True)
     owner = models.ForeignKey(
-        _("owner"),
         User,
         on_delete=models.CASCADE,
+        verbose_name=("owner"),
     )
 
     def delete(self, *args, **kwargs):
