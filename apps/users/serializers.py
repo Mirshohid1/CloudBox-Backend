@@ -19,3 +19,17 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        user = self.user
+        data['user'] = {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'used_storage': f"{user.used_storage}/{user.storage_limit}mb"
+        }
+        return data
