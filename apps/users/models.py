@@ -4,13 +4,6 @@ from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 
 
-def data_formating(value: str, is_name=False) -> str:
-    if value and value.strip():
-        value = value.strip().capitalize() if is_name else value.strip()
-
-    return value
-
-
 class User(AbstractUser):
     email = models.EmailField(
         _("email address"),
