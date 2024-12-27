@@ -12,14 +12,33 @@ from ..files.serializers import FileSerializer, FileInputSerializer
 from ..files.filtres import FileFilter
 from ..files.pagination import CustomPagination
 from ..folders.models import Folder
-from ..folders.serializers import FolderSerializer
+from ..folders.serializers import FolderSerializer, FolderInputSerializer
+from ..folders.pagination import CustomPagination
+from ..folders.filters import FolderFilter
 from ..users.models import User
 from ..users.serializers import CustomTokenObtainPairSerializer, RegisterSerializer
 
 
 class FolderViewSet(ModelViewSet):
-    queryset = Folder.objects.all()
-    serializer_class = FolderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            return Folder.objects.all()
+        else:
+            return Folder.objects.filter(user=user)
+
+    def get_serializer_class(self):
+        if self.action['create', 'update', 'partial_update']:
+            return FolderSerializer
+        return FolderInputSerializer
+
+    pagination_class = CustomPagination
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filterset_class = FolderFilter
+    ordering_fields = ['created_at', 'name']
+    ordering = ['created_at']
 
 
 class FileViewSet(ModelViewSet):
