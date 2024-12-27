@@ -4,8 +4,11 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenBlacklistView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django.db.models import Value, F
 from ..files.models import File
-from ..files.serializers import FileSerializer
+from ..files.serializers import FileSerializer, FileInputSerializer
 from ..folders.models import Folder
 from ..folders.serializers import FolderSerializer
 from ..users.models import User
@@ -18,8 +21,28 @@ class FolderViewSet(ModelViewSet):
 
 
 class FileViewSet(ModelViewSet):
-    queryset = File.objects.all()
-    serializer_class = FileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            return File.objects.all()
+        else:
+            return File.objects.filter(user=user)
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return FileSerializer
+        return FileInputSerializer
+
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = {
+        'file': ['exact', 'icontains'],
+        'uploaded_at': ['exact', 'gte', 'lte'],
+    }
+    search_fields = ['file']
+    ordering_fields = ['file', 'uploaded_at']
+    ordering = ['uploaded_at']
 
 
 class RegisterView(APIView):
