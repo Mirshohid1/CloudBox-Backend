@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenBlacklistView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
 from ..files.models import File
@@ -47,3 +47,11 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             'token': data.get('access'),
             'userId': data.get('userId')
         }, status=response.status_code)
+
+
+class CustomLogoutView(TokenBlacklistView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == 200:
+            return Response({'message': "Muvaffaqiyatli chiqish amalga oshirildi"}, status=status.HTTP_200_OK)
+        return response
