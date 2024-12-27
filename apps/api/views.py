@@ -9,6 +9,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django.db.models import Value, F
 from ..files.models import File
 from ..files.serializers import FileSerializer, FileInputSerializer
+from ..files.filtres import FileFilter
 from ..folders.models import Folder
 from ..folders.serializers import FolderSerializer
 from ..users.models import User
@@ -36,10 +37,7 @@ class FileViewSet(ModelViewSet):
         return FileInputSerializer
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = {
-        'file': ['exact', 'icontains'],
-        'uploaded_at': ['exact', 'gte', 'lte'],
-    }
+    filterset_fields = FileFilter
     search_fields = ['file']
     ordering_fields = ['file', 'uploaded_at']
     ordering = ['uploaded_at']
