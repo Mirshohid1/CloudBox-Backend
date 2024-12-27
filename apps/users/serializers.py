@@ -24,12 +24,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-
-        user = self.user
-        data['user'] = {
-            'id': user.id,
-            'username': user.username,
-            'email': user.email,
-            'used_storage': f"{user.used_storage}/{user.storage_limit}mb"
-        }
+        data.update({
+            'userID': self.user.id
+        })
         return data
