@@ -10,6 +10,7 @@ from django.db.models import Value, F
 from ..files.models import File
 from ..files.serializers import FileSerializer, FileInputSerializer
 from ..files.filtres import FileFilter
+from ..files.pagination import CustomPagination
 from ..folders.models import Folder
 from ..folders.serializers import FolderSerializer
 from ..users.models import User
@@ -36,6 +37,7 @@ class FileViewSet(ModelViewSet):
             return FileSerializer
         return FileInputSerializer
 
+    pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = FileFilter
     search_fields = ['file']
