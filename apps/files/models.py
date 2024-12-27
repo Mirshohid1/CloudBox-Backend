@@ -22,7 +22,6 @@ class File(models.Model):
         verbose_name=_("folder file")
     )
     file = models.FileField(upload_to=path_file, verbose_name=_("file"))
-    file_type = models.CharField(max_length=100)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
 
@@ -32,6 +31,14 @@ class File(models.Model):
         verbose_name=_("owner"),
         null=True, blank=True,
     )
+
+    @property
+    def file_name(self):
+        return os.path.basename(self.file.name)
+
+    @property
+    def file_extension(self):
+        return os.path.splitext(self.file.name)[-1].lower()
 
     def delete(self, *args, **kwargs):
         if self.file:
