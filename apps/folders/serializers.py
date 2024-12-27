@@ -6,4 +6,3 @@ class FolderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Folder
         fields = ('name', 'parent')
-
