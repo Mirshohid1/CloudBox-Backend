@@ -7,7 +7,10 @@ from ..folders.models import Folder
 
 
 def path_file(instance, filename):
-    return f"{instance.folder.get_full_path()}/{filename}"
+    if instance.folder:
+        return f"{instance.folder.get_full_path()}/{filename}"
+    else:
+        return f"uploads/{filename}"
 
 
 class File(models.Model):

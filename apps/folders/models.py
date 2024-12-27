@@ -1,3 +1,6 @@
+import os
+import shutil
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from ..users.models import User
@@ -28,16 +31,23 @@ class Folder(models.Model):
     )
 
     def delete(self, *args, **kwargs):
-        for file in self.files.all():
-            file.delete()
+        folder_path = self.get_full_path()
 
         for subfolder in self.subfolders.all():
             subfolder.delete(*args, *kwargs)
 
+        if os.path.exists(folder_path):
+            print(folder_path)
+            try:
+                os.rmdir(folder_path)
+            except OSError:
+                shutil.rmtree(folder_path)
+
+
         super().delete(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        self.name = data_formating(self.name, False)
+        self.name = data_formatting(self.name, False)
         super().save(*args, **kwargs)
 
     def get_full_path(self):
