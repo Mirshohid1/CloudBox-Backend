@@ -23,7 +23,7 @@ class File(models.Model):
     )
     file = models.FileField(upload_to=path_file, verbose_name=_("file"))
     file_type = models.CharField(max_length=100)
-    upload_at = models.DateTimeField(auto_now_add=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)
 
     owner = models.ForeignKey(
