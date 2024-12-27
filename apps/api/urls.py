@@ -4,6 +4,6 @@ from . import views
 
 router = DefaultRouter()
 router.register(r'folders', views.FolderViewSet)
-router.register(r'files', views.FileSerializer)
+router.register(r'files', views.FileViewSet)
 
 urlpatterns = router.urls
