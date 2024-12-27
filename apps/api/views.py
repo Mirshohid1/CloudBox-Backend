@@ -42,7 +42,7 @@ class FolderViewSet(ModelViewSet):
 
     def perform_destroy(self, instance):
         if self.request.user == instance.owner:
-            instance.delete()
+            super().perform_destroy(instance)
         else:
             raise PermissionDenied("Faqat o'zingizni folderingizni o'chira olasiz")
 
@@ -69,7 +69,7 @@ class FileViewSet(ModelViewSet):
 
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = FileFilter
+    filterset_class = FileFilter
     search_fields = ['file']
     ordering_fields = ['file', 'uploaded_at']
     ordering = ['uploaded_at']
