@@ -1,3 +1,4 @@
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
@@ -35,6 +36,16 @@ class FolderViewSet(ModelViewSet):
         return FolderInputSerializer
 
     pagination_class = CustomPagination
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    def perform_destroy(self, instance):
+        if self.request.user == instance.owner:
+            instance.delete()
+        else:
+            raise PermissionDenied("Faqat o'zingizni folderingizni o'chira olasiz")
+
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = FolderFilter
     ordering_fields = ['created_at', 'name']
