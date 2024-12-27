@@ -34,3 +34,16 @@ class RegisterView(APIView):
                 'userId': user.id,
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        data = response.data
+        return Response({
+            'token': data.get('access'),
+            'userId': data.get('userId')
+        }, status=response.status_code)
