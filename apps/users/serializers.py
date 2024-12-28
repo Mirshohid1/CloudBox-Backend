@@ -27,4 +27,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data.update({
             'userId': self.user.id
         })
+
+        try:
+            User.validate_unique_username(data.get("username"))
+        except
+
         return data

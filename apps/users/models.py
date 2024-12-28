@@ -10,12 +10,14 @@ class User(AbstractUser):
     storage_limit = models.PositiveIntegerField(_("storage limit"), default=10240)
     used_storage = models.PositiveIntegerField(_("used storage"), default=0)
 
-    def validate_unique_username(self):
-        if User.objects.filter(username=self.username).exclude(pk=self.pk).exists():
+    @staticmethod
+    def validate_unique_username(username):
+        if User.objects.filter(username=username).exists():
             raise ValidationError({'username': _("The username already exists.")})
 
-    def validate_unique_email(self):
-        if User.objects.filter(email=self.email).exclude(pk=self.pk).exists():
+    @staticmethod
+    def validate_unique_email(email):
+        if User.objects.filter(email=email).exists():
             raise ValidationError({"email": _("The email address is already in use.")})
 
     def clean(self):
