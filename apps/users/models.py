@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-from services.formatting import data_formatting
+from config.utils import data_formatting
 
 
 class User(AbstractUser):
@@ -20,10 +20,10 @@ class User(AbstractUser):
 
     def clean(self):
         super().clean()
-        self.first_name = data_formatting(self.first_name, True)
-        self.last_name = data_formatting(self.last_name, True)
-        self.username = data_formatting(self.username, is_required_field=True)
-        self.email = data_formatting(self.email, is_required_field=True)
+        self.first_name = data_formatting(self.first_name, is_name=True, is_required_field=False)
+        self.last_name = data_formatting(self.last_name, is_name=True, is_required_field=False)
+        self.username = data_formatting(self.username)
+        self.email = data_formatting(self.email)
         self.validate_unique_username()
         self.validate_unique_email()
 

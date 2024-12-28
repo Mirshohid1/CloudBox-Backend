@@ -4,7 +4,7 @@ import shutil
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from ..users.models import User
-from services.formatting import data_formatting
+from config.utils import data_formatting
 
 
 def get_default_parent_folder():
@@ -47,7 +47,7 @@ class Folder(models.Model):
         super().delete(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        self.name = data_formatting(self.name, False)
+        self.name = data_formatting(self.name, is_name=False)
         super().save(*args, **kwargs)
 
     def get_full_path(self):
