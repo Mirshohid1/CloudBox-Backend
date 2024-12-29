@@ -30,6 +30,7 @@ class File(models.Model):
         on_delete=models.CASCADE,
         verbose_name=_("owner"),
         null=True, blank=True,
+        related_name="files",
     )
 
     @property

@@ -27,7 +27,8 @@ class Folder(models.Model):
         User,
         on_delete=models.CASCADE,
         verbose_name=_("owner"),
-        null=True, blank=True
+        null=True, blank=True,
+        related_name="folders"
     )
 
     def delete(self, *args, **kwargs):
