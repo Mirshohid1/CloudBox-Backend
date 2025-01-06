@@ -5,7 +5,7 @@ from .models import User
 from config.utils import data_formatting
 
 
-class BaseUserInputSerializer(serializers.ModelSerializer):
+class UserInputSerializer(serializers.ModelSerializer):
     files = serializers.SerializerMethodField()
     folders = serializers.SerializerMethodField()
 
@@ -27,14 +27,6 @@ class BaseUserInputSerializer(serializers.ModelSerializer):
         return obj.folders.filter(is_deleted=False).values(
             'id', 'name', 'parent',
             'created_at',
-        )
-
-
-class AdminUserInputSerializer(BaseUserInputSerializer):
-    class Meta:
-        model = User
-        fields = (
-            'id', 'email', ''
         )
 
 
