@@ -30,22 +30,25 @@ class Folder(models.Model):
         null=True, blank=True,
         related_name="folders"
     )
+    is_deleted = models.BooleanField(default=False)
 
     def delete(self, *args, **kwargs):
+        self.is_deleted = True
+        self.save()
+
+    def restore(self):
+        self.is_deleted = False
+        self.save()
+
+    def hard_delete(self, *args, **kwargs):
         folder_path = self.get_full_path()
-
-        for subfolder in self.subfolders.all():
-            subfolder.delete(*args, *kwargs)
-
-        if os.path.exists(folder_path):
-            print(folder_path)
-            try:
-                os.rmdir(folder_path)
-            except OSError:
+        try:
+            if os.path.exists(folder_path):
                 shutil.rmtree(folder_path)
+        except OSError as e:
+            raise RuntimeError(f"Error deleting folder: {e}")
 
-
-        super().delete(*args, **kwargs)
+        super().delete()
 
     def save(self, *args, **kwargs):
         self.name = data_formatting(self.name, is_name=False)
