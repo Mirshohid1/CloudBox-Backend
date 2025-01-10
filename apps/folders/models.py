@@ -3,7 +3,10 @@ import shutil
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from rest_framework.exceptions import ValidationError
+
 from ..users.models import User
+from apps.files.models import File
 from config.utils import data_formatting
 
 
@@ -33,22 +36,32 @@ class Folder(models.Model):
     is_deleted = models.BooleanField(default=False)
 
     def delete(self, *args, **kwargs):
-        self.is_deleted = True
-        self.save()
+        if not self.is_deleted:
+            self.is_deleted = True
+            self.save()
 
-    def restore(self):
-        self.is_deleted = False
-        self.save()
+            Folder.objects.filter(parent__id=self.id).update(is_deleted=True)
+            Folder.objects.filter(folder__id=self.id).update(is_deleted=True)
 
-    def hard_delete(self, *args, **kwargs):
-        folder_path = self.get_full_path()
-        try:
-            if os.path.exists(folder_path):
-                shutil.rmtree(folder_path)
-        except OSError as e:
-            raise RuntimeError(f"Error deleting folder: {e}")
+    def hard_delete(self):
+        subfolders = Folder.objects.filter(parent__id=self.id)
+        for folder in subfolders:
+            folder.hard_delete()
+
+        files = File.objects.filter(folder__id=self.id)
+        for file in files:
+            file.hard_delete()
 
         super().delete()
+
+    def restore(self):
+        if self.is_deleted:
+            self.is_deleted = False
+            self.save()
+
+            Folder.objects.filter(parent__id=self.id).update(is_deleted=False)
+            File.objects.filter(folder__id=self.id).update(is_deleted=False)
+
 
     def save(self, *args, **kwargs):
         self.name = data_formatting(self.name, is_name=False)

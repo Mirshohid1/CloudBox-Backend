@@ -42,17 +42,19 @@ class File(models.Model):
         return os.path.splitext(self.file.name)[-1].lower()
 
     def delete(self, *args, **kwargs):
-        self.is_deleted = True
-        self.save()
+        if not self.is_deleted:
+            self.is_deleted = True
+            self.save()
 
-    def restore(self):
-        self.is_deleted = False
-        self.save()
-
-    def hard_delete(self, *args, **kwargs):
+    def hard_delete(self):
         if self.file and os.path.exists(self.file.path):
             os.remove(self.file.path)
-        super().delete(*args, **kwargs)
+        super().delete()
+
+    def restore(self):
+        if self.is_deleted:
+            self.is_deleted = False
+            self.save()
 
     def __str__(self):
         return self.file.path
