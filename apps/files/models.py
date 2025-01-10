@@ -58,3 +58,7 @@ class File(models.Model):
 
     def __str__(self):
         return self.file.path
+
+    class Meta:
+        verbose_name = _("File")
+        verbose_name_plural = _("Files")
