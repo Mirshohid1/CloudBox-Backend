@@ -2,8 +2,8 @@ import os.path
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from ..users.models import User
-from ..folders.models import Folder
+from apps.users.models import User
+# from apps.folders.models import Folder
 
 
 def path_file(instance, filename):
@@ -15,7 +15,7 @@ def path_file(instance, filename):
 
 class File(models.Model):
     folder = models.ForeignKey(
-        Folder,
+        'folders.Folder',
         on_delete=models.CASCADE,
         related_name='files',
         null=True, blank=True,

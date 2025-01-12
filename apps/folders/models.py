@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 
-from ..users.models import User
+from apps.users.models import User
 from apps.files.models import File
 from config.utils import data_formatting
 
